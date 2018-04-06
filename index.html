@@ -20,10 +20,10 @@
                         v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
                 </div>
             </div>
-            <span>Time: {{ elapsedTime }}s</span>
+            <span>Time: {{ elapsedTime.toFixed(3) }}s</span>
         </div>
         <div v-if="state == 'over'">
-            <div><span>Your result: {{ elapsedTime }}s</span></div>
+            <div><span>Your result: {{ elapsedTime.toFixed(3) }}s</span></div>
             <button v-on:click="state = 'run'">Play Again</button>
         </div>
     </div>
