@@ -5,11 +5,13 @@
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="app.css">
 </head>
 <body>
-    <div id="app">
-        <div v-if="state == 'initial'">
+    <div class="view">
+    <div id="app" class="app">
+        <div v-if="state == 'initial'" class="center-content">
             <button v-on:click="state = 'run'">Start</button>
         </div>
         <div v-if="state == 'run'">
@@ -23,10 +25,13 @@
             </div>
             <span>Time: {{ elapsedTime.toFixed(3) }}s</span>
         </div>
-        <div v-if="state == 'over'">
-            <div><span>Your result: {{ elapsedTime.toFixed(3) }}s</span></div>
-            <button v-on:click="state = 'run'">Play Again</button>
+        <div v-if="state == 'over'" class="center-content">
+            <div>
+                <div><span>Your result: {{ elapsedTime.toFixed(3) }}s</span></div>
+                <button v-on:click="state = 'run'">Play Again</button>
+            </div>
         </div>
+    </div>
     </div>
 
     <script>
