@@ -40,7 +40,6 @@
                 bugY: 0,
                 eyes: [],
                 elapsedTime: 0,
-                difficultyLevel: 0,
             },
             watch: {
                 state: function (val) {
@@ -48,20 +47,16 @@
                         this.bugX = this.cols - 1;
                         this.bugY = this.rows - 1;
                         this.eyes = [];
-                        this.difficultyLevel = 0;
-
+                        
                         const startTime = Date.now();
                         const interval = setInterval(() => {
                             this.elapsedTime = (Date.now() - startTime) / 1000;
 
                             if (this.eyes.length < this.cols * this.rows - 1) {
-                                if (Math.floor(this.elapsedTime  / 5) >= this.difficultyLevel) {
-                                    this.difficultyLevel++;
-                                    if (this.eyes.length == 0) {
-                                        this.eyes.push(createEye());
-                                    } else {
-                                        this.eyes.push(createEye(this.eyes[0].power));
-                                    }
+                                if (Math.floor(this.elapsedTime / 5) >= this.eyes.length) {
+                                    this.eyes.push(createEye(
+                                        this.eyes.length == 0 ? 0 : this.eyes[0].power
+                                    ));
                                 }
                             }
 
@@ -76,7 +71,7 @@
                         }, 50);
                     }
 
-                    function createEye(power = 0) {
+                    function createEye(power) {
                         const maxPower = 15;
                         return {
                             x: 0,
