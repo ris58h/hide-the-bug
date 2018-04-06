@@ -13,7 +13,7 @@
         <div class="square">
             <div id="app" class="app">
                 <div v-if="state == 'initial'" class="center-content">
-                    <button v-on:click="state = 'run'" ref="startButton">Start</button>
+                    <button v-on:click="run" ref="startButton" class="button">Start</button>
                 </div>
                 <div v-if="state == 'run'">
                     <div v-for="(_, y) in size" class="row">
@@ -26,9 +26,9 @@
                     </div>
                 </div>
                 <div v-if="state == 'over'" class="center-content">
-                    <div>
-                        <div><span>Your Score: {{ score }}</span></div>
-                        <button v-on:click="state = 'run'" ref="tryAgain">Play Again</button>
+                    <div class="column">
+                        <div>Your Score: {{ score }}</div>
+                        <button v-on:click="run" ref="tryAgain" class="button">Play Again</button>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,10 @@
                 }
             },
             methods: {
-                randomCellWihoutEye() {
+                run: function () {
+                    this.state = "run";
+                },
+                randomCellWihoutEye: function () {
                     const freeCells = [];
                     for (let x = 0; x < this.size; x++) {
                         for (let y = 0; y < this.size; y++) {
