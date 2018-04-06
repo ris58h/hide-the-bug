@@ -13,7 +13,10 @@
         <div class="square">
             <div id="app" class="app">
                 <div v-if="state == 'initial'" class="center-content">
-                    <button v-on:click="run" ref="startButton" class="button">Start</button>
+                    <div class="column">
+                        <div>Hide the bug!</div>
+                        <button v-on:click="run" ref="startButton" class="button">Start</button>
+                    </div>
                 </div>
                 <div v-if="state == 'run'">
                     <div v-for="(_, y) in size" class="row">
