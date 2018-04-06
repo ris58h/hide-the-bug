@@ -21,7 +21,7 @@
                             v-bind:class="{ clickable : clickableCell(x, y) }">
                             <div v-if="bugX == x && bugY == y" class="bug"></div>
                             <div v-for="eye in eyesInCell(x, y)" class="eye"
-                                v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
+                                v-bind:style="{opacity: eyeOpacity(eye)}"></div>
                         </div>
                     </div>
                 </div>
@@ -173,6 +173,10 @@
                 sawBug: function (eye) {
                     return this.bugX == eye.x && this.bugY == eye.y 
                         && eye.power == eye.maxPower;
+                },
+                eyeOpacity: function (eye) {
+                    const norm = eye.power * (1 / eye.maxPower);
+                    return norm;
                 }
             },
             mounted: function () {
