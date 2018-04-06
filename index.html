@@ -12,7 +12,7 @@
     <div class="view">
     <div id="app" class="app">
         <div v-if="state == 'initial'" class="center-content">
-            <button v-on:click="state = 'run'">Start</button>
+            <button v-on:click="state = 'run'" ref="startButton">Start</button>
         </div>
         <div v-if="state == 'run'">
             <div v-for="(_, y) in rows" class="row">
@@ -28,7 +28,7 @@
         <div v-if="state == 'over'" class="center-content">
             <div>
                 <div><span>Your result: {{ elapsedTime.toFixed(3) }}s</span></div>
-                <button v-on:click="state = 'run'">Play Again</button>
+                <button v-on:click="state = 'run'" ref="tryAgain">Play Again</button>
             </div>
         </div>
     </div>
@@ -77,6 +77,8 @@
                                 }
                             }
                         }, 50);
+                    } else if (val == "over") {
+                        this.$nextTick(() => this.$refs.tryAgain.focus());
                     }
 
                     function createEye(x, y, power) {
@@ -166,6 +168,8 @@
                 }
             },
             mounted: function () {
+                this.$refs.startButton.focus();
+
                 document.addEventListener("keyup", keyupHandler);
 
                 function keyupHandler(e) {
