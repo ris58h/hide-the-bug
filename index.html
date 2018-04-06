@@ -54,7 +54,10 @@
 
                             if (this.eyes.length < this.cols * this.rows - 1) {
                                 if (Math.floor(this.elapsedTime / 5) >= this.eyes.length) {
+                                    const freeCell = this.randomCellWihoutEye();
                                     this.eyes.push(createEye(
+                                        freeCell.x,
+                                        freeCell.y,
                                         this.eyes.length == 0 ? 0 : this.eyes[0].power
                                     ));
                                 }
@@ -71,11 +74,11 @@
                         }, 50);
                     }
 
-                    function createEye(power) {
+                    function createEye(x, y, power) {
                         const maxPower = 15;
                         return {
-                            x: 0,
-                            y: 0,
+                            x,
+                            y,
                             maxPower, 
                             power: Math.min(power, maxPower),
                             powerStep: 1,
@@ -84,6 +87,25 @@
                 }
             },
             methods: {
+                randomCellWihoutEye() {
+                    const freeCells = [];
+                    for (let x = 0; x < this.cols; x++) {
+                        for (let y = 0; y < this.rows; y++) {
+                            let free = true;
+                            for (const eye of this.eyes) {
+                                if (x == eye.x && y == eye.y) {
+                                    free = false;
+                                    break;
+                                }
+                            }
+                            if (free) {
+                                freeCells.push({ x, y });
+                            }
+                        }
+                    }
+                    const length = freeCells.length;
+                    return length == 0 ? null : freeCells[randomInt(length)];
+                },
                 eyesInCell: function (x, y) {
                     return this.eyes.filter(function (eye) {
                         return eye.x == x && eye.y == y;
@@ -128,8 +150,9 @@
                     const newPower = eye.power + eye.powerStep;
                     eye.power = newPower > eye.maxPower ? 0 : newPower;
                     if (eye.power == 0) {
-                        eye.x = getRandomInt(this.cols);
-                        eye.y = getRandomInt(this.rows);
+                        const freeCell = this.randomCellWihoutEye();
+                        eye.x = freeCell.x;
+                        eye.y = freeCell.y;
                     }
                 },
                 sawBug: function (eye) {
@@ -154,7 +177,7 @@
             }
         });
 
-        function getRandomInt(max) {
+        function randomInt(max) {
             return Math.floor(Math.random() * Math.floor(max));
         }
     </script>
