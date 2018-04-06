@@ -10,8 +10,8 @@
     height: 10vmin;
     min-width: 20vmin;
     padding: 0 5vmin;
-
     font-size: 5vmin;
+    cursor: pointer;
 }
 
 .row {
