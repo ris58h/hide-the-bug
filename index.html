@@ -24,11 +24,10 @@
                                 v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
                         </div>
                     </div>
-                    <!-- <span>Time: {{ elapsedTime.toFixed(3) }}s</span> -->
                 </div>
                 <div v-if="state == 'over'" class="center-content">
                     <div>
-                        <div><span>Your result: {{ elapsedTime.toFixed(3) }}s</span></div>
+                        <div><span>Your Score: {{ score }}</span></div>
                         <button v-on:click="state = 'run'" ref="tryAgain">Play Again</button>
                     </div>
                 </div>
@@ -41,11 +40,16 @@
             el: '#app',
             data: {
                 state: "initial",
-                size: 3,
+                size: 2,
                 bugX: 0,
                 bugY: 0,
                 eyes: [],
                 elapsedTime: 0,
+            },
+            computed: {
+                score: function () {
+                    return Math.floor(this.elapsedTime * 10);
+                }
             },
             watch: {
                 state: function (val) {
