@@ -9,57 +9,83 @@
 </head>
 <body>
     <div id="app">
-        <div v-for="(_, y) in rows" class="row">
-            <div v-for="(_, x) in cols" class="cell" v-on:click="cellClick(x, y)">
-                <div v-if="bugX == x && bugY == y" class="bug"></div>
-                <div v-for="eye in eyesInCell(x, y)" class="eye"
-                    v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
-            </div>
+        <div v-if="state == 'initial'">
+            <button v-on:click="state = 'run'">Start</button>
         </div>
-        <span>Time: {{ elapsedTime }}s</span>
+        <div v-if="state == 'run'">
+            <div v-for="(_, y) in rows" class="row">
+                <div v-for="(_, x) in cols" class="cell" v-on:click="cellClick(x, y)">
+                    <div v-if="bugX == x && bugY == y" class="bug"></div>
+                    <div v-for="eye in eyesInCell(x, y)" class="eye"
+                        v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
+                </div>
+            </div>
+            <span>Time: {{ elapsedTime }}s</span>
+        </div>
+        <div v-if="state == 'over'">
+            <div><span>Your result: {{ elapsedTime }}s</span></div>
+            <button v-on:click="state = 'run'">Play Again</button>
+        </div>
     </div>
 
     <script>
-        const cols = 2;
-        const rows = 2;
-        
-        const maxEyePower = 13;
-        const eyePowerStep = 1;
-
         const app = new Vue({
             el: '#app',
             data: {
-                cols,
-                rows,
-                bugX: cols - 1,
-                bugY: rows - 1,
-                eyes: [
-                    {
-                        x: 0,
-                        y: 0,
-                        power: maxEyePower,
-                        maxPower: maxEyePower, 
-                        increasePower: false,
-                        powerStep: eyePowerStep,
-                    },
-                    {
-                        x: 0,
-                        y: 0,
-                        power: maxEyePower,
-                        maxPower: maxEyePower, 
-                        increasePower: false,
-                        powerStep: eyePowerStep,
-                    },
-                    {
-                        x: 0,
-                        y: 0,
-                        power: maxEyePower,
-                        maxPower: maxEyePower, 
-                        increasePower: false,
-                        powerStep: eyePowerStep,
-                    },
-                ],
-                elapsedTime: 0
+                state: "initial",
+                cols: 2,
+                rows: 2,
+                bugX: 0,
+                bugY: 0,
+                eyes: [],
+                elapsedTime: 0,
+                difficultyLevel: 0,
+            },
+            watch: {
+                state: function (val) {
+                    if (val == "run") {
+                        this.bugX = this.cols - 1;
+                        this.bugY = this.rows - 1;
+                        this.eyes = [];
+                        this.difficultyLevel = 0;
+
+                        const startTime = Date.now();
+                        const interval = setInterval(() => {
+                            this.elapsedTime = (Date.now() - startTime) / 1000;
+
+                            if (this.eyes.length < this.cols * this.rows - 1) {
+                                if (Math.floor(this.elapsedTime  / 5) >= this.difficultyLevel) {
+                                    this.difficultyLevel++;
+                                    if (this.eyes.length == 0) {
+                                        this.eyes.push(createEye());
+                                    } else {
+                                        this.eyes.push(createEye(this.eyes[0].power));
+                                    }
+                                }
+                            }
+
+                            for (const eye of this.eyes) {
+                                this.updateEye(eye);
+                                if (this.sawBug(eye)) {
+                                    clearInterval(interval);
+                                    this.state = "over";
+                                    return;
+                                }
+                            }
+                        }, 50);
+                    }
+
+                    function createEye(power = 0) {
+                        const maxPower = 15;
+                        return {
+                            x: 0,
+                            y: 0,
+                            maxPower, 
+                            power: Math.min(power, maxPower),
+                            powerStep: 1,
+                        }
+                    }
+                }
             },
             methods: {
                 eyesInCell: function (x, y) {
@@ -101,18 +127,11 @@
                     }
                 },
                 updateEye: function (eye) {
-                    if (eye.increasePower) {
-                        eye.power += eye.powerStep;
-                    } else {
-                        eye.power -= eye.powerStep;
-                    }
+                    const newPower = eye.power + eye.powerStep;
+                    eye.power = newPower > eye.maxPower ? 0 : newPower;
                     if (eye.power == 0) {
-                        eye.increasePower = !eye.increasePower;
-                        
                         eye.x = getRandomInt(this.cols);
                         eye.y = getRandomInt(this.rows);
-                    } else if (eye.power == eye.maxPower) {
-                        eye.increasePower = !eye.increasePower;
                     }
                 },
                 sawBug: function (eye) {
@@ -122,23 +141,6 @@
             },
             mounted: function () {
                 document.addEventListener("keyup", keyupHandler);
-
-                const startTime = Date.now();
-                const interval = setInterval(() => {
-                    for (const eye of this.eyes) {
-                        this.updateEye(eye);
-                    }
-
-                    this.elapsedTime = (Date.now() - startTime) / 1000;
-
-                    for (const eye of this.eyes) {
-                        if (this.sawBug(eye)) {
-                            clearInterval(interval);
-                            alert("GAME OVER!");
-                            break;
-                        }
-                    }
-                }, 50);
 
                 function keyupHandler(e) {
                     if (e.keyCode == 37) {
