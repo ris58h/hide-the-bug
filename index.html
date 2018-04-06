@@ -1,0 +1,162 @@
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="app.css">
+</head>
+<body>
+    <div id="app">
+        <div v-for="(_, y) in rows" class="row">
+            <div v-for="(_, x) in cols" class="cell" v-on:click="cellClick(x, y)">
+                <div v-if="bugX == x && bugY == y" class="bug"></div>
+                <div v-for="eye in eyesInCell(x, y)" class="eye"
+                    v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
+            </div>
+        </div>
+        <span>Time: {{ elapsedTime }}s</span>
+    </div>
+
+    <script>
+        const cols = 2;
+        const rows = 2;
+        
+        const maxEyePower = 13;
+        const eyePowerStep = 1;
+
+        const app = new Vue({
+            el: '#app',
+            data: {
+                cols,
+                rows,
+                bugX: cols - 1,
+                bugY: rows - 1,
+                eyes: [
+                    {
+                        x: 0,
+                        y: 0,
+                        power: maxEyePower,
+                        maxPower: maxEyePower, 
+                        increasePower: false,
+                        powerStep: eyePowerStep,
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        power: maxEyePower,
+                        maxPower: maxEyePower, 
+                        increasePower: false,
+                        powerStep: eyePowerStep,
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        power: maxEyePower,
+                        maxPower: maxEyePower, 
+                        increasePower: false,
+                        powerStep: eyePowerStep,
+                    },
+                ],
+                elapsedTime: 0
+            },
+            methods: {
+                eyesInCell: function (x, y) {
+                    return this.eyes.filter(function (eye) {
+                        return eye.x == x && eye.y == y;
+                    });
+                },
+                cellClick: function (x, y) {
+                    const deltaX = x - this.bugX;
+                    const deltaY = y - this.bugY;
+                    const absX = Math.abs(deltaX);
+                    const absY = Math.abs(deltaY);
+                    if (absX > 0 && absY > 0) {
+                        return;
+                    }
+                    if (absX > 1 || absY > 1) {
+                        return;
+                    }
+                    this.bugX = x;
+                    this.bugY = y;
+                },
+                move: function (direction) {
+                    if (direction == "left") {
+                        if (this.bugX > 0) {
+                            this.bugX--;
+                        }
+                    } else if (direction == "right") {
+                        if (this.bugX < this.cols - 1) {
+                            this.bugX++;
+                        }
+                    } else if (direction == "up") {
+                        if (this.bugY > 0) {
+                            this.bugY--;
+                        }
+                    } else if (direction == "down") {
+                        if (this.bugY < this.rows - 1) {
+                            this.bugY++;
+                        }
+                    }
+                },
+                updateEye: function (eye) {
+                    if (eye.increasePower) {
+                        eye.power += eye.powerStep;
+                    } else {
+                        eye.power -= eye.powerStep;
+                    }
+                    if (eye.power == 0) {
+                        eye.increasePower = !eye.increasePower;
+                        
+                        eye.x = getRandomInt(this.cols);
+                        eye.y = getRandomInt(this.rows);
+                    } else if (eye.power == eye.maxPower) {
+                        eye.increasePower = !eye.increasePower;
+                    }
+                },
+                sawBug: function (eye) {
+                    return this.bugX == eye.x && this.bugY == eye.y 
+                        && eye.power == eye.maxPower;
+                }
+            },
+            mounted: function () {
+                document.addEventListener("keyup", keyupHandler);
+
+                const startTime = Date.now();
+                const interval = setInterval(() => {
+                    for (const eye of this.eyes) {
+                        this.updateEye(eye);
+                    }
+
+                    this.elapsedTime = (Date.now() - startTime) / 1000;
+
+                    for (const eye of this.eyes) {
+                        if (this.sawBug(eye)) {
+                            clearInterval(interval);
+                            alert("GAME OVER!");
+                            break;
+                        }
+                    }
+                }, 50);
+
+                function keyupHandler(e) {
+                    if (e.keyCode == 37) {
+                        app.move("left");
+                    } else if (e.keyCode == 38) {
+                        app.move("up");
+                    } else if (e.keyCode == 39) {
+                        app.move("right");
+                    } else if (e.keyCode == 40) {
+                        app.move("down");
+                    }
+                }
+            }
+        });
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+    </script>
+</body>
+</html>
