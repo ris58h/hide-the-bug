@@ -14,7 +14,8 @@
         </div>
         <div v-if="state == 'run'">
             <div v-for="(_, y) in rows" class="row">
-                <div v-for="(_, x) in cols" class="cell" v-on:click="cellClick(x, y)">
+                <div v-for="(_, x) in cols" class="cell" v-on:click="cellClick(x, y)"
+                    v-bind:class="{ clickable : clickableCell(x, y) }">
                     <div v-if="bugX == x && bugY == y" class="bug"></div>
                     <div v-for="eye in eyesInCell(x, y)" class="eye"
                         v-bind:style="{opacity: eye.power * (1 / eye.maxPower)}"></div>
@@ -93,19 +94,21 @@
                         return eye.x == x && eye.y == y;
                     });
                 },
-                cellClick: function (x, y) {
+                clickableCell: function (x, y) {
                     const deltaX = x - this.bugX;
                     const deltaY = y - this.bugY;
+                    if (deltaX == 0 && deltaY == 0) {
+                        return false;
+                    }
                     const absX = Math.abs(deltaX);
                     const absY = Math.abs(deltaY);
-                    if (absX > 0 && absY > 0) {
-                        return;
+                    return !(absX > 1 || absY > 1);
+                },
+                cellClick: function (x, y) {
+                    if (this.clickableCell(x, y)) {
+                        this.bugX = x;
+                        this.bugY = y;
                     }
-                    if (absX > 1 || absY > 1) {
-                        return;
-                    }
-                    this.bugX = x;
-                    this.bugY = y;
                 },
                 move: function (direction) {
                     if (direction == "left") {
