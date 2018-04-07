@@ -76,8 +76,16 @@
                                 }
                             }
 
+                            shuffle(this.eyes);
                             for (const eye of this.eyes) {
-                                this.updateEye(eye);
+                                const newPower = eye.power + eye.powerStep;
+                                eye.power = newPower > eye.maxPower ? 0 : newPower;
+                                if (eye.power == 0) {
+                                    const freeCell = this.randomCellWihoutEye();
+                                    eye.x = freeCell.x;
+                                    eye.y = freeCell.y;
+                                }
+                                
                                 if (this.sawBug(eye)) {
                                     clearInterval(interval);
                                     this.state = "over";
@@ -164,15 +172,6 @@
                         }
                     }
                 },
-                updateEye: function (eye) {
-                    const newPower = eye.power + eye.powerStep;
-                    eye.power = newPower > eye.maxPower ? 0 : newPower;
-                    if (eye.power == 0) {
-                        const freeCell = this.randomCellWihoutEye();
-                        eye.x = freeCell.x;
-                        eye.y = freeCell.y;
-                    }
-                },
                 sawBug: function (eye) {
                     return this.bugX == eye.x && this.bugY == eye.y 
                         && eye.power == eye.maxPower;
@@ -203,6 +202,14 @@
 
         function randomInt(max) {
             return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        function shuffle(a) {
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
         }
     </script>
 </body>
