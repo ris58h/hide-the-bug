@@ -56,6 +56,6 @@
     left: 5%;
     width: 90%;
     height: 90%;
-    border-radius: 50%;
-    background-color: blue;
+    background-image: url(eye.svg);
+    background-size: cover;
 }
