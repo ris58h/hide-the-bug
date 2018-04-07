@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version = "1.1"
+     xmlns = "http://www.w3.org/2000/svg" 
+     xmlns:xlink = "http://www.w3.org/1999/xlink"
+     height = "100px"  width = "100px">
+    <defs>
+        <clipPath id="clipHead">
+            <rect x="0" y="0" width="100" height="48" />
+        </clipPath>
+        <clipPath id="clipLeftWing">
+            <rect x="0" y="50" width="49" height="50" />
+        </clipPath>
+        <clipPath id="clipRightWing">
+            <rect x="51" y="50" width="50" height="50" />
+        </clipPath>
+        <clipPath id="clipLeftAntenna">
+            <rect x="20" y="15" width="30" height="30" />
+        </clipPath>
+        <clipPath id="clipRightAntenna">
+            <rect x="50" y="15" width="30" height="30" />
+        </clipPath>
+    </defs>
+    <circle cx="50" cy="50" r="25" fill="red" clip-path="url(#clipHead)" />
+    <ellipse cx="50" cy="50" rx="30" ry="50" fill="red" clip-path="url(#clipLeftWing)" />
+    <ellipse cx="50" cy="50" rx="30" ry="50" fill="red" clip-path="url(#clipRightWing)" />
+    <circle cx="20" cy="50" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipLeftAntenna)" />    
+    <circle cx="80" cy="50" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipRightAntenna)" />    
+</svg>
