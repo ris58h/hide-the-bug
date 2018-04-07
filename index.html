@@ -31,6 +31,7 @@
                 <div v-if="state == 'over'" class="center-content">
                     <div class="column">
                         <div>Your Score: {{ score }}</div>
+                        <div>Your Best Score: {{ bestScore }}</div>
                         <button v-on:click="run" ref="tryAgain" class="button">Play Again</button>
                     </div>
                 </div>
@@ -54,10 +55,14 @@
                 bugY: 0,
                 eyes: [],
                 elapsedTime: 0,
+                bestTime: 0,
             },
             computed: {
                 score: function () {
-                    return Math.floor(this.elapsedTime * 10);
+                    return this.timeToScore(this.elapsedTime);
+                },
+                bestScore: function () {
+                    return this.timeToScore(this.bestTime);
                 }
             },
             watch: {
@@ -93,6 +98,9 @@
                                 }
                                 
                                 if (this.sawBug(eye)) {
+                                    if (this.elapsedTime > this.bestTime) {
+                                        this.bestTime = this.elapsedTime;
+                                    }
                                     clearInterval(interval);
                                     this.state = "over";
                                     return;
@@ -116,6 +124,9 @@
                 }
             },
             methods: {
+                timeToScore: function (time) {
+                    return Math.floor(time * 10);
+                },
                 run: function () {
                     this.state = "run";
                 },
