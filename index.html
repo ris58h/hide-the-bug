@@ -42,6 +42,8 @@
     <script>
         const params = parseParams(window.location.href);
         
+        const levelTime = 3;
+
         const minSize = 2;
         const defaultSize = 3;
         const size = Math.max(minSize, parseInt(params["size"]) || defaultSize);
@@ -77,7 +79,8 @@
                             this.elapsedTime = (Date.now() - startTime) / 1000;
 
                             if (this.eyes.length < this.size * this.size - 1) {
-                                if (Math.floor(this.elapsedTime / 5) >= this.eyes.length) {
+                                const level = Math.floor(this.elapsedTime / levelTime);
+                                if (level >= this.eyes.length) {
                                     const freeCell = this.randomCellWihoutEye();
                                     this.eyes.push(createEye(
                                         freeCell.x,
