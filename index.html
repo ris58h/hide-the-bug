@@ -39,11 +39,17 @@
     </div>
     
     <script>
+        const params = parseParams(window.location.href);
+        
+        const minSize = 2;
+        const defaultSize = 2;
+        const size = Math.max(minSize, parseInt(params["size"]) || defaultSize);
+
         const app = new Vue({
             el: '#app',
             data: {
                 state: "initial",
-                size: 2,
+                size,
                 bugX: 0,
                 bugY: 0,
                 eyes: [],
@@ -210,6 +216,20 @@
                 [a[i], a[j]] = [a[j], a[i]];
             }
             return a;
+        }
+
+        function parseParams(href) {
+            const noHash = href.split('#')[0];
+            const paramString = noHash.split('?')[1];
+            const params = {};
+            if (paramString) {
+                const paramsArray = paramString.split('&');
+                for (const kv of paramsArray) {
+                    const tmparr = kv.split('=');
+                    params[tmparr[0]] = tmparr[1];
+                }
+            }
+            return params;
         }
     </script>
 </body>
