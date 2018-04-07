@@ -42,7 +42,7 @@
         const params = parseParams(window.location.href);
         
         const minSize = 2;
-        const defaultSize = 2;
+        const defaultSize = 3;
         const size = Math.max(minSize, parseInt(params["size"]) || defaultSize);
 
         const app = new Vue({
