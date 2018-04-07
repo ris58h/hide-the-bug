@@ -21,8 +21,19 @@
         </clipPath>
     </defs>
     <circle cx="50" cy="40" r="25" fill="red" clip-path="url(#clipHead)" />
+    
     <ellipse cx="50" cy="40" rx="30" ry="50" fill="red" clip-path="url(#clipLeftWing)" />
     <ellipse cx="50" cy="40" rx="30" ry="50" fill="red" clip-path="url(#clipRightWing)" />
-    <circle cx="20" cy="40" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipLeftAntenna)" />    
-    <circle cx="80" cy="40" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipRightAntenna)" />    
+    
+    <circle cx="20" cy="40" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipLeftAntenna)" />
+    <circle cx="80" cy="40" r="30" stroke="red" stroke-width="4" fill="none" clip-path="url(#clipRightAntenna)" />
+    
+    <path d="M 10 50 A 50 50 0 0 1 30 50" stroke="red" stroke-width="4" fill="none" />
+    <path d="M 90 50 A 50 50 0 0 0 70 50" stroke="red" stroke-width="4" fill="none" />
+    
+    <path d="M 12 70 A 50 50 0 0 1 30 63" stroke="red" stroke-width="4" fill="none" />
+    <path d="M 88 70 A 50 50 0 0 0 70 63" stroke="red" stroke-width="4" fill="none" />
+    
+    <path d="M 20 90 A 50 100 0 0 1 30 75" stroke="red" stroke-width="4" fill="none" />
+    <path d="M 80 90 A 50 100 0 0 0 70 75" stroke="red" stroke-width="4" fill="none" />
 </svg>
