@@ -161,15 +161,6 @@
                     });
                 },
                 clickableCell: function (x, y) {
-                    // const deltaX = x - this.bugX;
-                    // const deltaY = y - this.bugY;
-                    // if (deltaX == 0 && deltaY == 0) {
-                    //     return false;
-                    // }
-                    // const absX = Math.abs(deltaX);
-                    // const absY = Math.abs(deltaY);
-                    // return !(absX > 1 || absY > 1);
-
                     return !(this.bugX == x && this.bugY == y);
                 },
                 cellClick: function (x, y) {
