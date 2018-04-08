@@ -18,7 +18,7 @@
                         <button v-on:click="run" ref="startButton" class="button">Start</button>
                     </div>
                 </div>
-                <div v-if="state == 'run'">
+                <div v-if="state == 'run'" class="board">
                     <div v-for="(_, y) in size" class="row">
                         <div v-for="(_, x) in size" class="cell" v-on:click="cellClick(x, y)"
                             v-bind:class="{ clickable : clickableCell(x, y) }">
