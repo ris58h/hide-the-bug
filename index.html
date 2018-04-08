@@ -24,7 +24,7 @@
                             v-bind:class="{ clickable : clickableCell(x, y) }">
                             <div v-if="bugX == x && bugY == y" class="bug"></div>
                             <div v-for="eye in eyesInCell(x, y)" class="eye"
-                                v-bind:style="{opacity: eyeOpacity(eye)}"></div>
+                                v-bind:style="{opacity: eyeOpacity()}"></div>
                         </div>
                     </div>
                 </div>
@@ -44,6 +44,8 @@
         
         const levelTime = 3;
 
+        const maxPower = 20;
+
         const minSize = 2;
         const defaultSize = 3;
         const size = Math.max(minSize, parseInt(params["size"]) || defaultSize);
@@ -58,6 +60,8 @@
                 eyes: [],
                 elapsedTime: 0,
                 bestTime: 0,
+                power: 0,
+                maxPower,
             },
             computed: {
                 score: function () {
@@ -82,19 +86,18 @@
                                 const level = Math.floor(this.elapsedTime / levelTime);
                                 if (level >= this.eyes.length) {
                                     const freeCell = this.randomCellWihoutEye();
-                                    this.eyes.push(createEye(
-                                        freeCell.x,
-                                        freeCell.y,
-                                        this.eyes.length == 0 ? 0 : this.eyes[0].power
-                                    ));
+                                    this.eyes.push({
+                                        x: freeCell.x,
+                                        y: freeCell.y,
+                                    });
                                 }
                             }
 
+                            const newPower = this.power + 1;
+                            this.power = newPower > this.maxPower ? 0 : newPower;
                             shuffle(this.eyes);
                             for (const eye of this.eyes) {
-                                const newPower = eye.power + eye.powerStep;
-                                eye.power = newPower > eye.maxPower ? 0 : newPower;
-                                if (eye.power == 0) {
+                                if (this.power == 0) {
                                     const freeCell = this.randomCellWihoutEye();
                                     eye.x = freeCell.x;
                                     eye.y = freeCell.y;
@@ -112,17 +115,6 @@
                         }, 50);
                     } else if (val == "over") {
                         this.$nextTick(() => this.$refs.tryAgain.focus());
-                    }
-
-                    function createEye(x, y, power) {
-                        const maxPower = 20;
-                        return {
-                            x,
-                            y,
-                            maxPower, 
-                            power: Math.min(power, maxPower),
-                            powerStep: 1,
-                        }
                     }
                 }
             },
@@ -196,10 +188,10 @@
                 },
                 sawBug: function (eye) {
                     return this.bugX == eye.x && this.bugY == eye.y 
-                        && eye.power == eye.maxPower;
+                        && this.power == this.maxPower;
                 },
-                eyeOpacity: function (eye) {
-                    const norm = eye.power * (1 / eye.maxPower);
+                eyeOpacity: function () {
+                    const norm = this.power * (1 / this.maxPower);
                     return norm;
                 }
             },
