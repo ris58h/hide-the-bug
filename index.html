@@ -30,8 +30,9 @@
                 </div>
                 <div v-if="state == 'over'" class="center-content">
                     <div class="column">
-                        <div>Your Score: {{ score }}</div>
-                        <div>Your Best Score: {{ bestScore }}</div>
+                        <div>DETECTED</div>
+                        <div>Your time: {{ timeString }}</div>
+                        <div>Your best time: {{ bestTimeString }}</div>
                         <button v-on:click="run" ref="tryAgain" class="button">Play Again</button>
                     </div>
                 </div>
@@ -64,11 +65,11 @@
                 maxPower,
             },
             computed: {
-                score: function () {
-                    return this.timeToScore(this.elapsedTime);
+                timeString: function () {
+                    return this.timeToString(this.elapsedTime);
                 },
-                bestScore: function () {
-                    return this.timeToScore(this.bestTime);
+                bestTimeString: function () {
+                    return this.timeToString(this.bestTime);
                 }
             },
             watch: {
@@ -130,8 +131,8 @@
                 }
             },
             methods: {
-                timeToScore: function (time) {
-                    return Math.floor(time * 10);
+                timeToString: function (time) {
+                    return time.toFixed(1) + "s";
                 },
                 run: function () {
                     this.state = "run";
