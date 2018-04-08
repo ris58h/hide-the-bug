@@ -82,34 +82,45 @@
                         const interval = setInterval(() => {
                             this.elapsedTime = (Date.now() - startTime) / 1000;
 
-                            if (this.eyes.length < this.size * this.size - 1) {
+                            let itIsaddTime = false;
+                            const freeCellAvailable = this.eyes.length < this.size * this.size - 1;
+                            if (freeCellAvailable) {
                                 const level = Math.floor(this.elapsedTime / levelTime);
                                 if (level >= this.eyes.length) {
+                                    itIsaddTime = true;
+                                }
+                            }
+
+                            const newPower = this.power + 1;
+                            this.power = newPower > this.maxPower ? 0 : newPower;
+                            const itIsmoveTime = this.power == 0; 
+                            if (itIsmoveTime) {
+                                if (itIsaddTime) {
                                     const freeCell = this.randomCellWihoutEye();
                                     this.eyes.push({
                                         x: freeCell.x,
                                         y: freeCell.y,
                                     });
                                 }
+                                shuffle(this.eyes);
                             }
-
-                            const newPower = this.power + 1;
-                            this.power = newPower > this.maxPower ? 0 : newPower;
-                            shuffle(this.eyes);
-                            for (const eye of this.eyes) {
-                                if (this.power == 0) {
-                                    const freeCell = this.randomCellWihoutEye();
-                                    eye.x = freeCell.x;
-                                    eye.y = freeCell.y;
-                                }
-                                
-                                if (this.sawBug(eye)) {
-                                    if (this.elapsedTime > this.bestTime) {
-                                        this.bestTime = this.elapsedTime;
+                            const itIscheckTime = this.power == this.maxPower;
+                            if (itIsmoveTime || itIscheckTime) {
+                                for (const eye of this.eyes) {
+                                    if (itIsmoveTime) {
+                                        const freeCell = this.randomCellWihoutEye();
+                                        eye.x = freeCell.x;
+                                        eye.y = freeCell.y;
+                                    } else if (itIscheckTime) {
+                                        if (this.bugX == eye.x && this.bugY == eye.y) {
+                                            if (this.elapsedTime > this.bestTime) {
+                                                this.bestTime = this.elapsedTime;
+                                            }
+                                            clearInterval(interval);
+                                            this.state = "over";
+                                            return;
+                                        }
                                     }
-                                    clearInterval(interval);
-                                    this.state = "over";
-                                    return;
                                 }
                             }
                         }, 50);
@@ -185,10 +196,6 @@
                             this.bugY++;
                         }
                     }
-                },
-                sawBug: function (eye) {
-                    return this.bugX == eye.x && this.bugY == eye.y 
-                        && this.power == this.maxPower;
                 },
                 eyeOpacity: function () {
                     const norm = this.power * (1 / this.maxPower);
