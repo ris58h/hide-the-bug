@@ -18,22 +18,24 @@
                         <button v-on:click="run" ref="startButton" class="button">Start</button>
                     </div>
                 </div>
-                <div v-if="state == 'run'" class="board">
-                    <div v-for="(_, y) in size" class="row">
-                        <div v-for="(_, x) in size" class="cell" v-on:click="cellClick(x, y)"
-                            v-bind:class="{ clickable : clickableCell(x, y) }">
-                            <div v-if="bugX == x && bugY == y" class="bug"></div>
-                            <div v-for="eye in eyesInCell(x, y)" class="eye"
-                                v-bind:style="{opacity: eyeOpacity()}"></div>
+                <div v-if="state != initial">
+                    <div class="board">
+                        <div v-for="(_, y) in size" class="row">
+                            <div v-for="(_, x) in size" class="cell" v-on:click="cellClick(x, y)"
+                                v-bind:class="{ clickable : clickableCell(x, y) }">
+                                <div v-if="bugX == x && bugY == y" class="bug"></div>
+                                <div v-for="eye in eyesInCell(x, y)" class="eye"
+                                    v-bind:style="{opacity: eyeOpacity()}"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-if="state == 'over'" class="center-content">
-                    <div class="column">
-                        <div>DETECTED</div>
-                        <div>Your time: {{ timeString }}</div>
-                        <div>Your best time: {{ bestTimeString }}</div>
-                        <button v-on:click="run" ref="tryAgain" class="button">Play Again</button>
+                    <div v-if="state == 'over'" class="modal center-content">
+                        <div class="column">
+                            <div>DETECTED</div>
+                            <div>Your time: {{ timeString }}</div>
+                            <div>Your best time: {{ bestTimeString }}</div>
+                            <button v-on:click="run" ref="tryAgain" class="button">Play Again</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,8 +77,8 @@
             watch: {
                 state: function (val) {
                     if (val == "run") {
-                        this.bugX = Math.floor(this.size / 2);
-                        this.bugY = Math.floor(this.size / 2);
+                        this.bugX = middle(this.size);
+                        this.bugY = middle(this.size);
                         this.eyes = [];
                         
                         const startTime = Date.now();
@@ -165,12 +167,18 @@
                     return !(this.bugX == x && this.bugY == y);
                 },
                 cellClick: function (x, y) {
+                    if (this.state != "run") {
+                        return;
+                    }
                     if (this.clickableCell(x, y)) {
                         this.bugX = x;
                         this.bugY = y;
                     }
                 },
                 move: function (direction) {
+                    if (this.state != "run") {
+                        return;
+                    }
                     if (direction == "left") {
                         if (this.bugX > 0) {
                             this.bugX--;
@@ -212,6 +220,10 @@
                 }
             }
         });
+
+        function middle(n) {
+            return Math.floor(n / 2);
+        }
 
         function randomInt(max) {
             return Math.floor(Math.random() * Math.floor(max));
